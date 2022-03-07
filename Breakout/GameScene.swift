@@ -5,6 +5,7 @@ import GameplayKit
 class GameScene: SKScene {
     var ball = SKShapeNode()
     var paddle = SKSpriteNode()
+    var brick = SKSpriteNode()
     override func didMove(to view: SKView) {
         createBackground()
         resetGame()
@@ -13,6 +14,7 @@ class GameScene: SKScene {
             // this stuff happens before each game starts
             makeBall()
         makePaddle()
+        makeBrick() 
         }
     func createBackground() {
 
@@ -63,6 +65,15 @@ class GameScene: SKScene {
             paddle.physicsBody = SKPhysicsBody(rectangleOf: paddle.size)
             paddle.physicsBody?.isDynamic = false
             addChild(paddle)
+        }
+    func makeBrick() {
+            brick.removeFromParent()    // remove the brick, if it exists
+            brick = SKSpriteNode(color: .blue, size: CGSize(width: 50, height: 20))
+            brick.position = CGPoint(x: frame.midX, y: frame.maxY - 50)
+            brick.name = "brick"
+            brick.physicsBody = SKPhysicsBody(rectangleOf: brick.size)
+            brick.physicsBody?.isDynamic = false
+            addChild(brick)
         }
 
 }
