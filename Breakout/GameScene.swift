@@ -154,19 +154,27 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 }
        }
     func didBegin(_ contact: SKPhysicsContact) {
-            // ask each brick, "Is it you?"
-            for brick in bricks {
-                if contact.bodyA.node == brick ||
-                   contact.bodyB.node == brick {
-                    score += 1
-                    updateLabels()
-                    brick.removeFromParent()
-                    removedBricks += 1
-                    if removedBricks == bricks.count {
-                        gameOver(winner: true)
+        // ask each brick, "Is it you?"
+                for brick in bricks {
+                    if contact.bodyA.node == brick ||
+                        contact.bodyB.node == brick {
+                        score += 1
+                        updateLabels()
+                        if brick.color == .blue {
+                            brick.color = .orange   // blue bricks turn orange
+                        }
+                        else if brick.color == .orange {
+                            brick.color = .green    // orange bricks turn green
+                        }
+                        else {  // must be a green brick, which get removed
+                            brick.removeFromParent()
+                            removedBricks += 1
+                            if removedBricks == bricks.count {
+                                gameOver(winner: true)
+                            }
+                        }
                     }
                 }
-            }
             if contact.bodyA.node?.name == "loseZone" ||
                contact.bodyB.node?.name == "loseZone" {
                 lives -= 1
@@ -201,15 +209,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             bricks.removeAll()  // clear the array
             removedBricks = 0   // reset the counter
             
-            // now, figure the number and spacing of each row of bricks
-            let count = Int(frame.width) / 55   // bricks per row
-            let xOffset = (Int(frame.width) - (count * 55)) / 2 + Int(frame.minX) + 25
-            let y = Int(frame.maxY) - 15
-            for i in 0..<count {
-                let x = i * 55 + xOffset
-                makeBrick(x: x , y: y, color: .green)
-            }
-        }
+        // now, figure the number and spacing of each row of bricks
+                let count = Int(frame.width) / 55   // bricks per row
+                let xOffset = (Int(frame.width) - (count * 55)) / 2 + Int(frame.minX) + 25
+                let colors: [UIColor] = [.blue, .orange, .green]
+                for r in 0..<3 {
+                    let y = Int(frame.maxY) - 15 - (r * 25)
+                    for i in 0..<count {
+                        let x = i * 55 + xOffset
+                        makeBrick(x: x , y: y, color: colors[r])
+                    }
+                }
+    }
 
 
 }
